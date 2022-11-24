@@ -1,4 +1,5 @@
 # qiwu's blog
 
-who is me？ZiHan Guo，student from HIT
+## who is me？
+I'm ZiHan Guo，a cs student from HIT
 
