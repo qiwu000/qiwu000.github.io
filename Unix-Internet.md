@@ -109,3 +109,61 @@ When the X server comes up, during the last part of your machine's boot process,
 您的帐户条目还包含您的*主目录*，这是您的个人文件所在的 Unix 文件系统中的位置。最后，您的帐户条目还设置了您的 *shell*，**登录**将启动的命令解释器接受您的命令。
 
 成功登录后会发生什么取决于您是如何登录的。在文本控制台上，**登录**将启动一个 shell，您将关闭并运行。如果您通过显示管理器登录，X 服务器将打开您的图形桌面，您将能够从中运行程序——通过菜单、通过桌面图标，或者通过运行*shell的**终端仿真器*。
+
+
+
+## 5. 开机后运行程序会怎样？
+
+After boot time and before you run a program, you can think of your computer as containing a zoo of processes that are all waiting for something to do. They're all waiting on *events*. An event can be you pressing a key or moving a mouse. Or, **if your machine is hooked to a network**, an event can be a data packet coming in over that network.
+
+在启动时间之后和运行程序之前，您可以将计算机视为包含一个进程动物园，这些进程都在等待执行某些操作。他们都在等待*事件*。事件可以是您按下一个键或移动鼠标。或者，**如果您的机器连接到网络**，则事件可以是通过该网络传入的数据包。
+
+内核是这些进程之一。这是一个特殊的进程，因为它控制着其他*用户进程*何时可以运行，并且它通常是唯一可以直接访问机器硬件的进程。事实上，当用户进程想要获得键盘输入、写入屏幕、读取或写入磁盘，或者除了在内存中处理位之外的任何事情时，都必须向内核发出请求。这些请求称为*系统调用*。
+
+通常所有 I/O 都通过内核，因此它可以安排操作并防止进程相互踩踏。允许一些特殊的用户进程在内核中滑动，通常是通过直接访问 I/O 端口。X 服务器是最常见的例子。
+
+You will run programs in one of two ways: through your X server or through a shell. Often, you'll actually do both, because you'll start a terminal **emulator(仿真器；仿真程序)** that mimics an old-fashioned textual console, giving you a shell to run programs from. I'll describe what happens when you do that, then I'll return to what happens when you run a program through an X menu or desktop icon.
+
+您将以两种方式之一运行程序：通过您的 X 服务器或通过 shell。通常，您实际上会同时执行这两种操作，因为您将启动一个模拟老式文本控制台的终端仿真器，为您提供一个运行程序的 shell。我将描述当您这样做时会发生什么，然后我将返回到当您通过 X 菜单或桌面图标运行程序时会发生什么。
+
+The shell is called the shell because it wraps around and hides the operating system kernel. It's an important feature of Unix that the shell and kernel are separate programs communicating through **a small set of system calls**. This makes it possible for there to be multiple shells, suiting different tastes in interfaces.
+
+外壳之所以称为外壳，是因为它包裹并隐藏了操作系统内核。shell 和内核是独立的程序，通过一小组系统调用进行通信，这是 Unix 的一个重要特征。这使得有多个 shell 成为可能，以适应界面中的不同口味。
+
+The normal shell gives you the ‘$’ prompt that you see after logging in (**unless you've customized it to be something else**). We won't talk about shell syntax and the easy things you can see on the screen here; instead we'll take a look behind the scenes at what's happening from the computer's point of view.
+
+正常的 shell 会在登录后显示“$”提示符（除非您已将其自定义为其他内容）。我们不会讨论 shell 语法和您可以在屏幕上看到的简单内容；相反，我们将从计算机的角度了解幕后发生的事情。
+
+shell只是一个用户进程，并不是特别特殊的进程。它等待您的击键，（通过内核）监听键盘 I/O 端口。当内核看到它们时，它会将它们回显到您的虚拟控制台或 X 终端仿真器。当内核看到“Enter”时，它会将您的文本行传递给 shell。shell 试图将这些击键解释为命令。
+
+假设您键入“ls”并回车以调用 Unix 目录列表器。shell 应用其内置规则来确定您要运行文件 `/bin/ls`中的可执行命令。它进行系统调用，要求内核将 /bin/ls 作为一个新的*子进程*启动，并通过内核授予它访问屏幕和键盘的权限。然后 shell 进入休眠状态，等待 ls 完成。
+
+当**/bin/ls**完成时，它通过发出*退出*系统调用告诉内核它已完成。然后内核唤醒 shell 并告诉它可以继续运行。shell 发出另一个提示并等待另一行输入。
+
+但是，当您的“ls”正在执行时，可能还会发生其他事情（我们必须假设您正在列出一个很长的目录）。例如，您可以切换到另一个虚拟控制台，在那里登录，然后开始一场 Quake 游戏。或者，假设您已连接到 Internet。**/bin/ls**运行时，您的机器可能正在发送或接收邮件 。
+
+当您通过 X 服务器而不是 shell 运行程序时（即，通过从下拉菜单中选择一个应用程序，或双击桌面图标），与您的 X 服务器关联的几个程序中的任何一个都可以表现得像一个 shell 并启动程序。我将在这里掩盖细节，因为它们既可变又不重要。关键点在于 X 服务器与普通 shell 不同，它不会在客户端程序运行时进入睡眠状态——相反，它位于您和客户端之间，将您的鼠标点击和按键操作传递给它并完成它的请求显示器上的点像素。
+
+
+
+## 6. 输入设备和中断如何工作？
+
+您的键盘是一种非常简单的输入设备；很简单，因为它生成少量数据的速度非常慢（按照计算机的标准）。当您按下或释放一个键时，该事件会通过键盘电缆发出信号以引发*硬件中断*。
+
+监视此类中断是操作系统的工作。对于每一种可能的中断，都会有一个*中断处理程序*，这是操作系统的一部分，它会隐藏与它们相关的任何数据（比如你的按键/按键释放值），直到它可以被处理。
+
+键盘的中断处理程序实际上所做的是将键值发送到内存底部附近的系统区域。在那里，当操作系统将控制权交给当前应该从键盘读取的任何程序时，它将可供检查。
+
+磁盘或网卡等更复杂的输入设备以类似的方式工作。早些时候，我提到了磁盘控制器使用总线来发出磁盘请求已完成的信号。实际发生的是磁盘引发中断。然后磁盘中断处理程序将检索到的数据复制到内存中，供发出请求的程序稍后使用。
+
+每种中断都有一个相关的*优先级*。低优先级中断（如键盘事件）必须等待高优先级中断（如时钟滴答或磁盘事件）。Unix 旨在为需要快速处理的事件类型提供高优先级，以保持机器的响应顺畅。
+
+在操作系统的启动时消息中，您可能会看到对*IRQ* 号的引用。您可能知道错误配置硬件的一种常见方法是让两个不同的设备尝试使用相同的 IRQ，但不了解确切原因。
+
+这就是答案。IRQ 是“中断请求”的缩写。操作系统需要在启动时知道每个硬件设备将使用哪个编号的中断，因此它可以将适当的处理程序与每个中断相关联。如果两个不同的设备尝试使用相同的 IRQ，中断有时会被分派到错误的处理程序。这通常至少会锁定设备，并且有时会严重混淆操作系统，以至于它会崩溃或崩溃。
+
+
+
+
+
+ 
