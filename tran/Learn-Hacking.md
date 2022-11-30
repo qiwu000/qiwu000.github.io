@@ -184,8 +184,10 @@ Eventually you will lead group projects and do entirely original work. Do not fe
 
 最终你将领导小组项目并完成完全原创的工作。不要觉得你必须匆忙或强迫它；如果你给你的技能时间来成熟，你的第一篇原创作品会更好。通过有效地为现有的开源项目做出贡献，您将学习运行自己的项目所需的技能（包括沟通技巧）。
 
-
-
 ------
 
 [[1\]](http://www.catb.org/~esr/faqs/hacking-howto.html#idm45418026495008)破解软件以外的东西当然是可能的，而且创客文化中的人也这样做。但是“黑客”这个*词* 起源于那些修补软件的人，并且仍然从那里辐射出去。再说了，作者还真没资格写学习其他种类。
+
+[[2\]](http://www.catb.org/~esr/faqs/hacking-howto.html#idm45418026909600)在过去，人们会在可能的情况下对闭源进行黑客攻击，因为别无选择。事情已经好转了。
+
+[[3\]](http://www.catb.org/~esr/faqs/hacking-howto.html#idm45418026904272)大约在 1983 年之前，黑客与 Unix 之间的联系不那么紧密，但现在主要只与历史学家有关。
