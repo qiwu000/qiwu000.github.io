@@ -1,6 +1,6 @@
 [Home Page](https://qiwu000.github.io/home.html)
 
-[Back](https://qiwu000.github.io/index/ds.html)
+[Back](https://qiwu000.github.io/ds/index.html)
 
 ![双向循环链表示意图](./dul_Cir_Link_List.assets/2-1Q129201509D0.gif)
 
