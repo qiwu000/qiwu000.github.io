@@ -1,4 +1,4 @@
-[Home Page](https://www.qiwu000.github.io/home.html)
+[Home Page](https://qiwu000.github.io/home.html)
 
 [Back](https://qiwu000.github.io/index/ds.html)
 
