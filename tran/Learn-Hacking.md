@@ -1,6 +1,6 @@
 [主页](https://qiwu000.github.io/home.html)
 
-[一些翻译](https://qiwu000.github.io/tran/index.html)
+[Back](https://qiwu000.github.io/tran/index.html)
 
 
 
